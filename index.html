@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Atelier & Ink — Community Gallery</title>
+<title>Atelier & Ink · Georgian Calligraphy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet"/>
@@ -11,20 +11,20 @@
 :root{
   --cream:#F4EDE0;--gold:#B8924A;--gold-d:#8C6A2E;--ink:#1A1410;
   --rule:rgba(244,237,224,.08);
-  --hh:64px; /* header height */
-  --fh:48px; /* footer height */
+  --hh:64px;--fh:48px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;}
 body{
-  background:#070707;overflow:hidden;width:100vw;height:100vh;
-  font-family:'Newsreader',Georgia,serif;cursor:grab;color:var(--cream);
+  background:#070707;
+  font-family:'Newsreader',Georgia,serif;
+  cursor:grab;color:var(--cream);
 }
 body.dragging{cursor:grabbing;}
-body.lb-open,body.menu-open{cursor:default;}
+body.lb-open,body.menu-open,body.page-open{cursor:default;}
 
+/* ── Canvas ── */
 #canvas-container{position:fixed;inset:0;z-index:1;}
-
-/* ── Vignette ── */
 #vignette{
   position:fixed;inset:0;pointer-events:none;z-index:2;
   background:radial-gradient(ellipse 80% 70% at 50% 50%,
@@ -43,18 +43,14 @@ body.lb-open,body.menu-open{cursor:default;}
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border-bottom:1px solid var(--rule);
 }
-
-/* Logo */
 .logo{
   font-family:'Fraunces',serif;font-style:italic;font-weight:300;
   font-size:1.45rem;letter-spacing:.02em;
   color:var(--cream);text-decoration:none;
-  display:flex;align-items:baseline;gap:.18em;
-  flex-shrink:0;
+  display:flex;align-items:baseline;gap:.18em;flex-shrink:0;cursor:pointer;
 }
 .logo em{color:var(--gold);font-style:italic;}
 
-/* Center nav */
 .header-nav{
   display:flex;gap:2.4rem;list-style:none;
   position:absolute;left:50%;transform:translateX(-50%);
@@ -62,19 +58,18 @@ body.lb-open,body.menu-open{cursor:default;}
 .header-nav a{
   font-size:.72rem;text-transform:uppercase;letter-spacing:.2em;
   color:rgba(244,237,224,.5);text-decoration:none;
-  transition:color .3s;position:relative;
+  transition:color .3s;position:relative;cursor:pointer;
 }
 .header-nav a::after{
   content:'';position:absolute;bottom:-4px;left:0;
   width:0;height:1px;background:var(--gold);transition:width .4s;
 }
 .header-nav a:hover{color:rgba(244,237,224,.9);}
-.header-nav a:hover::after{width:100%;}
+.header-nav a:hover::after,
+.header-nav a.active::after{width:100%;}
+.header-nav a.active{color:var(--gold);}
 
-/* Right side */
-.header-right{
-  display:flex;align-items:center;gap:1.4rem;flex-shrink:0;
-}
+.header-right{display:flex;align-items:center;gap:1.4rem;flex-shrink:0;}
 .btn-commission-sm{
   font-family:'Newsreader',serif;font-size:.72rem;
   text-transform:uppercase;letter-spacing:.2em;
@@ -85,24 +80,21 @@ body.lb-open,body.menu-open{cursor:default;}
 }
 .btn-commission-sm:hover{background:var(--cream);}
 
-/* Hamburger */
 #menu-toggle{
   display:flex;flex-direction:column;justify-content:center;gap:5px;
-  background:none;border:none;cursor:pointer;padding:4px;
-  width:32px;height:32px;
+  background:none;border:none;cursor:pointer;padding:4px;width:32px;height:32px;
 }
 #menu-toggle span{
   display:block;width:22px;height:1.5px;
   background:rgba(244,237,224,.7);
-  transition:all .35s cubic-bezier(.4,0,.2,1);
-  transform-origin:center;
+  transition:all .35s cubic-bezier(.4,0,.2,1);transform-origin:center;
 }
 #menu-toggle.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
 #menu-toggle.open span:nth-child(2){opacity:0;transform:scaleX(0);}
 #menu-toggle.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 
 /* ══════════════════════════════════════
-   DROPDOWN / SLIDE-IN MENU
+   SLIDE MENU
 ══════════════════════════════════════ */
 #site-menu{
   position:fixed;top:0;right:0;bottom:0;
@@ -117,13 +109,10 @@ body.lb-open,body.menu-open{cursor:default;}
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
 }
 #site-menu.open{transform:translateX(0);}
-
-/* Menu backdrop */
 #menu-backdrop{
   position:fixed;inset:0;z-index:89;
   background:rgba(0,0,0,.5);
-  opacity:0;pointer-events:none;
-  transition:opacity .4s;
+  opacity:0;pointer-events:none;transition:opacity .4s;
 }
 #menu-backdrop.open{opacity:1;pointer-events:all;}
 
@@ -133,18 +122,15 @@ body.lb-open,body.menu-open{cursor:default;}
   display:flex;align-items:center;gap:.6rem;
 }
 .menu-eyebrow::before{content:'';width:20px;height:1px;background:rgba(184,146,74,.4);}
-
 .menu-nav{list-style:none;display:flex;flex-direction:column;gap:.1rem;}
-.menu-nav li{
-  border-bottom:1px solid rgba(244,237,224,.05);
-}
+.menu-nav li{border-bottom:1px solid rgba(244,237,224,.05);}
 .menu-nav a{
   display:flex;align-items:center;justify-content:space-between;
   padding:1.1rem 0;
   font-family:'Fraunces',serif;font-weight:300;font-style:italic;
   font-size:clamp(1.6rem,3.5vw,2.2rem);
   color:rgba(244,237,224,.7);text-decoration:none;
-  letter-spacing:-.01em;
+  letter-spacing:-.01em;cursor:pointer;
   transition:color .3s,padding-left .3s;
 }
 .menu-nav a .num{
@@ -154,26 +140,18 @@ body.lb-open,body.menu-open{cursor:default;}
 }
 .menu-nav a:hover{color:var(--cream);padding-left:.6rem;}
 .menu-nav a:hover .num{color:var(--gold);}
-
-.menu-footer{
-  padding-top:2rem;
-  border-top:1px solid rgba(244,237,224,.07);
-}
-.menu-footer-links{
-  display:flex;flex-direction:column;gap:.7rem;margin-bottom:1.8rem;
-}
+.menu-footer{padding-top:2rem;border-top:1px solid rgba(244,237,224,.07);}
+.menu-footer-links{display:flex;flex-direction:column;gap:.7rem;margin-bottom:1.8rem;}
 .menu-footer-links a{
   font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
-  color:rgba(244,237,224,.35);text-decoration:none;
-  transition:color .3s;
+  color:rgba(244,237,224,.35);text-decoration:none;transition:color .3s;
 }
 .menu-footer-links a:hover{color:var(--gold);}
-.menu-copy{
-  font-size:.6rem;letter-spacing:.12em;
-  color:rgba(244,237,224,.2);line-height:1.6;
-}
+.menu-copy{font-size:.6rem;letter-spacing:.12em;color:rgba(244,237,224,.2);line-height:1.6;}
 
-/* ── Center hero ── */
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
 #hero{
   position:fixed;top:50%;left:50%;
   transform:translate(-50%,-50%);
@@ -181,15 +159,12 @@ body.lb-open,body.menu-open{cursor:default;}
   transition:opacity .5s ease;
 }
 #hero.fade{opacity:0;}
-
 .eyebrow{
   font-size:.68rem;letter-spacing:.42em;text-transform:uppercase;
   color:rgba(184,146,74,.8);margin-bottom:1rem;
   display:flex;align-items:center;justify-content:center;gap:.8rem;
 }
-.eyebrow::before,.eyebrow::after{
-  content:'';width:26px;height:1px;background:rgba(184,146,74,.45);
-}
+.eyebrow::before,.eyebrow::after{content:'';width:26px;height:1px;background:rgba(184,146,74,.45);}
 #hero h1{
   font-family:'Fraunces',serif;font-weight:300;font-style:italic;
   font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.08;letter-spacing:-.02em;
@@ -200,6 +175,361 @@ body.lb-open,body.menu-open{cursor:default;}
   margin-top:1.1rem;font-size:.66rem;letter-spacing:.32em;
   text-transform:uppercase;color:rgba(244,237,224,.2);
 }
+
+/* ══════════════════════════════════════
+   PAGE OVERLAY  (Work / Shop / Process / About)
+══════════════════════════════════════ */
+.page-overlay{
+  position:fixed;inset:0;z-index:40;
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity .55s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+  padding:calc(var(--hh) + 3rem) 0 calc(var(--fh) + 3rem);
+}
+.page-overlay.open{opacity:1;pointer-events:all;}
+
+/* translucent overlay bg */
+.page-overlay::before{
+  content:'';
+  position:fixed;inset:0;z-index:-1;
+  background:rgba(7,7,7,.72);
+  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+}
+
+.page-inner{
+  max-width:1100px;margin:0 auto;width:100%;
+  padding:0 2.4rem;
+}
+
+/* Page title */
+.page-title-block{
+  margin-bottom:3.5rem;
+  border-bottom:1px solid rgba(184,146,74,.14);
+  padding-bottom:2rem;
+}
+.page-eyebrow{
+  font-size:.62rem;letter-spacing:.42em;text-transform:uppercase;
+  color:rgba(184,146,74,.6);margin-bottom:1rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.page-eyebrow::before{content:'';width:18px;height:1px;background:rgba(184,146,74,.4);}
+.page-title-block h2{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:clamp(2.4rem,5vw,4rem);letter-spacing:-.02em;
+  line-height:1.05;color:var(--cream);
+}
+.page-title-block h2 em{color:var(--gold);}
+.page-lead{
+  margin-top:1rem;font-size:1rem;line-height:1.75;
+  color:rgba(244,237,224,.45);max-width:560px;font-weight:300;
+}
+
+/* ══ WORK page ══ */
+.work-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:1.5rem;
+}
+.work-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(184,146,74,.1);
+  overflow:hidden;cursor:pointer;
+  transition:border-color .3s,transform .3s;
+}
+.work-card:hover{border-color:rgba(184,146,74,.35);transform:translateY(-3px);}
+.work-card-img{
+  width:100%;aspect-ratio:3/4;
+  background:#111;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;
+}
+.work-card-img canvas{width:100%;height:100%;object-fit:cover;}
+.work-card-body{padding:1.1rem 1.2rem 1.3rem;}
+.work-card-title{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:1.05rem;color:var(--cream);margin-bottom:.5rem;
+}
+.work-card-tags{display:flex;flex-wrap:wrap;gap:.35rem;}
+.work-card-tag{
+  font-size:.58rem;letter-spacing:.12em;font-style:italic;
+  padding:.2rem .65rem;border-radius:20px;
+  background:rgba(184,146,74,.08);border:1px solid rgba(184,146,74,.18);
+  color:rgba(184,146,74,.75);font-family:'Fraunces',serif;
+}
+
+/* ══ SHOP page ══ */
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;}
+.shop-item{
+  background:rgba(255,255,255,.03);border:1px solid rgba(184,146,74,.1);
+  overflow:hidden;transition:border-color .3s,transform .3s;
+}
+.shop-item:hover{border-color:rgba(184,146,74,.35);transform:translateY(-3px);}
+.shop-item-img{
+  width:100%;aspect-ratio:1;
+  background:#111;display:flex;align-items:center;justify-content:center;
+}
+.shop-item-body{padding:1.1rem 1.2rem 1.3rem;}
+.shop-item-name{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:1rem;color:var(--cream);margin-bottom:.35rem;
+}
+.shop-item-price{
+  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.8rem;
+}
+.shop-item-desc{font-size:.8rem;line-height:1.65;color:rgba(244,237,224,.38);}
+.btn-buy{
+  display:inline-flex;align-items:center;gap:.45rem;
+  margin-top:1rem;padding:.6rem 1.2rem;
+  background:transparent;border:1px solid rgba(184,146,74,.3);
+  color:rgba(184,146,74,.85);font-family:'Newsreader',serif;
+  font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+  cursor:pointer;transition:all .3s;
+}
+.btn-buy:hover{background:var(--gold);color:var(--ink);border-color:var(--gold);}
+
+/* ══ PROCESS page ══ */
+.process-steps{display:flex;flex-direction:column;gap:0;}
+.process-step{
+  display:grid;grid-template-columns:80px 1fr;gap:2rem;
+  padding:2.2rem 0;border-bottom:1px solid rgba(244,237,224,.05);
+  align-items:start;
+}
+.process-step-num{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:3.5rem;color:rgba(184,146,74,.18);line-height:1;
+}
+.process-step-content h3{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:1.4rem;color:var(--cream);margin-bottom:.6rem;
+}
+.process-step-content p{
+  font-size:.88rem;line-height:1.82;color:rgba(244,237,224,.45);font-weight:300;
+}
+.process-tools{
+  margin-top:3rem;padding:2rem;
+  background:rgba(184,146,74,.05);border:1px solid rgba(184,146,74,.12);
+}
+.process-tools h3{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:1.2rem;color:var(--cream);margin-bottom:1.2rem;
+}
+.tools-list{display:flex;flex-wrap:wrap;gap:.6rem;}
+.tool-tag{
+  font-size:.62rem;letter-spacing:.14em;
+  padding:.3rem .9rem;
+  background:rgba(184,146,74,.08);border:1px solid rgba(184,146,74,.2);
+  color:rgba(184,146,74,.8);font-style:italic;font-family:'Fraunces',serif;
+}
+
+/* ══ ABOUT page ══ */
+.about-layout{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.about-portrait{
+  aspect-ratio:3/4;background:#111;
+  border:1px solid rgba(184,146,74,.1);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.about-portrait-label{
+  position:absolute;bottom:1.2rem;left:1.2rem;
+  font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(184,146,74,.55);
+}
+.about-text h3{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:2rem;color:var(--cream);margin-bottom:1.4rem;line-height:1.15;
+}
+.about-text p{
+  font-size:.9rem;line-height:1.88;color:rgba(244,237,224,.48);
+  margin-bottom:1.2rem;font-weight:300;
+}
+.about-facts{
+  margin-top:2.5rem;display:flex;flex-direction:column;gap:0;
+}
+.about-fact{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:.85rem 0;border-bottom:1px solid rgba(244,237,224,.05);
+}
+.about-fact-label{
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(244,237,224,.28);
+}
+.about-fact-val{
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:.95rem;color:rgba(244,237,224,.7);
+}
+
+/* ══ COMMISSION page ══ */
+.commission-layout{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;}
+.commission-info h3{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:1.5rem;color:var(--cream);margin-bottom:1rem;
+}
+.commission-info p{
+  font-size:.88rem;line-height:1.82;color:rgba(244,237,224,.42);margin-bottom:1.4rem;
+}
+.commission-details{display:flex;flex-direction:column;gap:0;margin-top:2rem;}
+.comm-detail{
+  display:flex;gap:1rem;padding:.9rem 0;
+  border-bottom:1px solid rgba(244,237,224,.05);align-items:start;
+}
+.comm-detail-icon{color:var(--gold);font-size:.85rem;margin-top:.1rem;flex-shrink:0;}
+.comm-detail-text h4{
+  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(244,237,224,.5);margin-bottom:.2rem;
+}
+.comm-detail-text p{font-size:.82rem;line-height:1.6;color:rgba(244,237,224,.32);}
+
+/* Contact form */
+.contact-form{display:flex;flex-direction:column;gap:1.2rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-group{display:flex;flex-direction:column;gap:.4rem;}
+.form-label{
+  font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(184,146,74,.6);
+}
+.form-input,.form-select,.form-textarea{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(244,237,224,.1);
+  color:var(--cream);font-family:'Newsreader',serif;font-size:.9rem;
+  padding:.75rem 1rem;outline:none;
+  transition:border-color .3s;
+  resize:none;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:rgba(184,146,74,.45);
+}
+.form-input::placeholder,.form-textarea::placeholder{color:rgba(244,237,224,.2);}
+.form-select{
+  appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(184,146,74,.5)'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 1rem center;
+  color:rgba(244,237,224,.6);
+}
+.form-select option{background:#1a1410;}
+.form-textarea{min-height:120px;}
+.btn-submit{
+  padding:1rem 2.2rem;background:var(--gold);color:var(--ink);
+  font-family:'Newsreader',serif;font-size:.78rem;
+  text-transform:uppercase;letter-spacing:.22em;
+  border:none;cursor:pointer;transition:all .3s;font-weight:500;
+  display:flex;align-items:center;gap:.6rem;align-self:flex-start;
+}
+.btn-submit:hover{background:var(--cream);}
+.form-note{
+  font-size:.62rem;letter-spacing:.12em;
+  color:rgba(244,237,224,.2);line-height:1.6;margin-top:.5rem;
+}
+.form-success{
+  display:none;text-align:center;padding:3rem 2rem;
+}
+.form-success.show{display:block;}
+.form-success-icon{font-size:2rem;color:var(--gold);margin-bottom:1rem;}
+.form-success h3{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:300;
+  font-size:1.6rem;color:var(--cream);margin-bottom:.7rem;
+}
+.form-success p{font-size:.85rem;color:rgba(244,237,224,.4);line-height:1.75;}
+
+/* ══════════════════════════════════════
+   LIGHTBOX
+══════════════════════════════════════ */
+#lightbox{
+  position:fixed;inset:0;z-index:50;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .5s cubic-bezier(.4,0,.2,1);
+}
+#lightbox.open{opacity:1;pointer-events:all;}
+#lb-backdrop{
+  position:absolute;inset:0;
+  background:rgba(5,5,5,.88);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);cursor:pointer;
+}
+#lb-modal{
+  position:relative;z-index:2;
+  display:flex;align-items:stretch;
+  width:min(880px,90vw);max-height:82vh;
+  background:rgba(13,11,9,.97);
+  border:1px solid rgba(184,146,74,.16);
+  box-shadow:0 48px 120px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.03);
+  overflow:hidden;
+  transform:translateY(22px) scale(.97);
+  transition:transform .5s cubic-bezier(.2,.8,.2,1);
+}
+#lightbox.open #lb-modal{transform:translateY(0) scale(1);}
+#lb-img-pane{
+  flex:0 0 43%;background:#0e0d0c;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;min-height:460px;
+}
+#lb-img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .4s;}
+#lb-text-pane{
+  flex:1;padding:2.8rem 3rem;
+  display:flex;flex-direction:column;justify-content:space-between;
+  overflow-y:auto;
+}
+.lb-eyebrow{
+  font-size:.62rem;letter-spacing:.38em;text-transform:uppercase;
+  color:rgba(184,146,74,.65);margin-bottom:1.4rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.lb-eyebrow::before{content:'';width:18px;height:1px;background:rgba(184,146,74,.4);}
+#lb-title{
+  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
+  font-size:clamp(1.6rem,2.4vw,2.2rem);line-height:1.1;
+  letter-spacing:-.01em;color:var(--cream);margin-bottom:1.1rem;
+}
+#lb-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.6rem;}
+.lb-tag{
+  font-size:.62rem;letter-spacing:.14em;font-style:italic;
+  padding:.28rem .82rem;border-radius:20px;
+  background:rgba(184,146,74,.09);border:1px solid rgba(184,146,74,.22);
+  color:rgba(184,146,74,.82);font-family:'Fraunces',serif;
+}
+#lb-desc{font-size:.88rem;line-height:1.82;color:rgba(244,237,224,.52);margin-bottom:2rem;font-weight:300;}
+#lb-actions{display:flex;flex-direction:column;gap:.8rem;margin-bottom:2rem;}
+.btn-commission{
+  display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
+  padding:.9rem 1.8rem;background:var(--gold);color:var(--ink);
+  font-family:'Newsreader',serif;font-size:.75rem;
+  text-transform:uppercase;letter-spacing:.22em;text-decoration:none;
+  cursor:pointer;border:none;transition:all .3s;font-weight:500;
+}
+.btn-commission:hover{background:var(--cream);}
+.btn-commission .arr{transition:transform .3s;}
+.btn-commission:hover .arr{transform:translateX(4px);}
+.btn-share{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:.9rem 1.8rem;background:transparent;
+  color:rgba(244,237,224,.55);border:1px solid rgba(244,237,224,.12);
+  font-family:'Newsreader',serif;font-size:.75rem;
+  text-transform:uppercase;letter-spacing:.22em;cursor:pointer;transition:all .3s;
+}
+.btn-share:hover{border-color:rgba(184,146,74,.38);color:var(--gold);}
+#lb-meta{
+  font-size:.59rem;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(184,146,74,.38);
+  padding-top:1.1rem;border-top:1px solid rgba(184,146,74,.1);
+}
+#lb-prev,#lb-next{
+  position:absolute;top:50%;
+  background:rgba(13,11,9,.88);border:1px solid rgba(244,237,224,.1);
+  color:rgba(244,237,224,.45);width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:5;transition:all .3s;font-size:.95rem;
+}
+#lb-prev{left:1.2rem;transform:translateY(-50%);}
+#lb-next{right:1.2rem;transform:translateY(-50%);}
+#lb-prev:hover,#lb-next:hover{border-color:rgba(184,146,74,.45);color:var(--gold);}
+#lb-close{
+  position:absolute;top:1.1rem;right:1.1rem;z-index:10;
+  background:rgba(13,11,9,.9);border:1px solid rgba(244,237,224,.1);
+  color:rgba(244,237,224,.5);width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .3s;font-size:.85rem;
+}
+#lb-close:hover{border-color:rgba(184,146,74,.4);color:var(--gold);}
 
 /* ══════════════════════════════════════
    FOOTER
@@ -213,141 +543,21 @@ body.lb-open,body.menu-open{cursor:default;}
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   border-top:1px solid var(--rule);
 }
-.footer-left{
-  font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;
-  color:rgba(244,237,224,.22);
-}
+.footer-left{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,237,224,.22);}
 .footer-center{
   position:absolute;left:50%;transform:translateX(-50%);
   display:flex;align-items:center;gap:.5rem;
   font-family:'Fraunces',serif;font-style:italic;font-weight:300;
   font-size:.85rem;color:rgba(184,146,74,.45);letter-spacing:.06em;
 }
-.footer-right{
-  display:flex;align-items:center;gap:1.8rem;
-}
+.footer-right{display:flex;align-items:center;gap:1.8rem;}
 .footer-right a{
   font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;
   color:rgba(244,237,224,.25);text-decoration:none;transition:color .3s;
 }
 .footer-right a:hover{color:var(--gold);}
 
-/* ══════════════════════════════════════
-   LIGHTBOX
-══════════════════════════════════════ */
-#lightbox{
-  position:fixed;inset:0;z-index:50;
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;
-  transition:opacity .5s cubic-bezier(.4,0,.2,1);
-}
-#lightbox.open{opacity:1;pointer-events:all;}
-
-#lb-backdrop{
-  position:absolute;inset:0;
-  background:rgba(5,5,5,.88);
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  cursor:pointer;
-}
-
-#lb-modal{
-  position:relative;z-index:2;
-  display:flex;align-items:stretch;
-  width:min(880px,90vw);max-height:82vh;
-  background:rgba(13,11,9,.97);
-  border:1px solid rgba(184,146,74,.16);
-  box-shadow:0 48px 120px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.03);
-  overflow:hidden;
-  transform:translateY(22px) scale(.97);
-  transition:transform .5s cubic-bezier(.2,.8,.2,1);
-}
-#lightbox.open #lb-modal{transform:translateY(0) scale(1);}
-
-#lb-img-pane{
-  flex:0 0 43%;background:#0e0d0c;
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;position:relative;min-height:460px;
-}
-#lb-img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .4s;}
-
-#lb-text-pane{
-  flex:1;padding:2.8rem 3rem;
-  display:flex;flex-direction:column;justify-content:space-between;
-  overflow-y:auto;
-}
-
-.lb-eyebrow{
-  font-size:.62rem;letter-spacing:.38em;text-transform:uppercase;
-  color:rgba(184,146,74,.65);margin-bottom:1.4rem;
-  display:flex;align-items:center;gap:.6rem;
-}
-.lb-eyebrow::before{content:'';width:18px;height:1px;background:rgba(184,146,74,.4);}
-
-#lb-title{
-  font-family:'Fraunces',serif;font-weight:300;font-style:italic;
-  font-size:clamp(1.6rem,2.4vw,2.2rem);line-height:1.1;
-  letter-spacing:-.01em;color:var(--cream);margin-bottom:1.1rem;
-}
-#lb-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.6rem;}
-.lb-tag{
-  font-size:.62rem;letter-spacing:.14em;font-style:italic;
-  padding:.28rem .82rem;border-radius:20px;
-  background:rgba(184,146,74,.09);border:1px solid rgba(184,146,74,.22);
-  color:rgba(184,146,74,.82);font-family:'Fraunces',serif;
-}
-#lb-desc{
-  font-size:.88rem;line-height:1.82;
-  color:rgba(244,237,224,.52);margin-bottom:2rem;font-weight:300;
-}
-#lb-actions{display:flex;flex-direction:column;gap:.8rem;margin-bottom:2rem;}
-
-.btn-commission{
-  display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
-  padding:.9rem 1.8rem;background:var(--gold);color:var(--ink);
-  font-family:'Newsreader',serif;font-size:.75rem;
-  text-transform:uppercase;letter-spacing:.22em;text-decoration:none;
-  cursor:pointer;border:none;transition:all .3s;font-weight:500;
-}
-.btn-commission:hover{background:var(--cream);}
-.btn-commission .arr{transition:transform .3s;}
-.btn-commission:hover .arr{transform:translateX(4px);}
-
-.btn-share{
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:.9rem 1.8rem;background:transparent;
-  color:rgba(244,237,224,.55);border:1px solid rgba(244,237,224,.12);
-  font-family:'Newsreader',serif;font-size:.75rem;
-  text-transform:uppercase;letter-spacing:.22em;cursor:pointer;transition:all .3s;
-}
-.btn-share:hover{border-color:rgba(184,146,74,.38);color:var(--gold);}
-
-#lb-meta{
-  font-size:.59rem;letter-spacing:.22em;text-transform:uppercase;
-  color:rgba(184,146,74,.38);
-  padding-top:1.1rem;border-top:1px solid rgba(184,146,74,.1);
-}
-
-#lb-prev,#lb-next{
-  position:absolute;top:50%;
-  background:rgba(13,11,9,.88);border:1px solid rgba(244,237,224,.1);
-  color:rgba(244,237,224,.45);width:42px;height:42px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;z-index:5;transition:all .3s;font-size:.95rem;
-}
-#lb-prev{left:1.2rem;transform:translateY(-50%);}
-#lb-next{right:1.2rem;transform:translateY(-50%);}
-#lb-prev:hover,#lb-next:hover{border-color:rgba(184,146,74,.45);color:var(--gold);}
-
-#lb-close{
-  position:absolute;top:1.1rem;right:1.1rem;z-index:10;
-  background:rgba(13,11,9,.9);border:1px solid rgba(244,237,224,.1);
-  color:rgba(244,237,224,.5);width:38px;height:38px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .3s;font-size:.85rem;
-}
-#lb-close:hover{border-color:rgba(184,146,74,.4);color:var(--gold);}
-
-/* ── Hint ── */
+/* ── Hint & Animations ── */
 #hint{
   position:fixed;bottom:calc(var(--fh) + .9rem);left:50%;transform:translateX(-50%);
   font-size:.6rem;letter-spacing:.32em;text-transform:uppercase;
@@ -358,17 +568,27 @@ body.lb-open,body.menu-open{cursor:default;}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 #hero{opacity:0;animation:fadeIn 1.8s ease .5s forwards;}
 
+/* Scrollbar */
+.page-overlay::-webkit-scrollbar{width:3px;}
+.page-overlay::-webkit-scrollbar-track{background:transparent;}
+.page-overlay::-webkit-scrollbar-thumb{background:rgba(184,146,74,.3);}
+
 /* ── Responsive ── */
+@media(max-width:900px){
+  .about-layout,.commission-layout{grid-template-columns:1fr;}
+  .about-portrait{aspect-ratio:16/9;}
+}
 @media(max-width:680px){
   .header-nav{display:none;}
   .btn-commission-sm{display:none;}
   #lb-modal{flex-direction:column;width:95vw;max-height:88vh;}
   #lb-img-pane{flex:0 0 220px;min-height:220px;}
-  #lb-text-pane{padding:1.8rem 1.8rem;}
+  #lb-text-pane{padding:1.8rem;}
   #lb-prev,#lb-next{display:none;}
   .footer-center{display:none;}
-  #site-header{padding:0 1.4rem;}
-  #site-footer{padding:0 1.4rem;}
+  #site-header,#site-footer{padding:0 1.4rem;}
+  .form-row{grid-template-columns:1fr;}
+  .process-step{grid-template-columns:48px 1fr;gap:1rem;}
 }
 </style>
 </head>
@@ -379,35 +599,33 @@ body.lb-open,body.menu-open{cursor:default;}
 
 <!-- ══════════ HEADER ══════════ -->
 <header id="site-header">
-  <a href="#" class="logo">Atelier <em>&amp;</em> Ink</a>
-
+  <a class="logo" data-page="home">Atelier <em>&amp;</em> Ink</a>
   <ul class="header-nav">
-    <li><a href="#work">Work</a></li>
-    <li><a href="#shop">Shop</a></li>
-    <li><a href="#process">Process</a></li>
-    <li><a href="#commission">Commission</a></li>
-    <li><a href="#about">About</a></li>
+    <li><a data-page="work">Work</a></li>
+    <li><a data-page="shop">Shop</a></li>
+    <li><a data-page="process">Process</a></li>
+    <li><a data-page="commission">Commission</a></li>
+    <li><a data-page="about">About</a></li>
   </ul>
-
   <div class="header-right">
-    <a href="#commission" class="btn-commission-sm">Commission a piece</a>
+    <button class="btn-commission-sm" data-page="commission">Commission a piece</button>
     <button id="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
 
-<!-- ══════════ MENU OVERLAY ══════════ -->
+<!-- ══════════ MENU ══════════ -->
 <div id="menu-backdrop"></div>
 <nav id="site-menu" aria-label="Site navigation">
   <div>
     <div class="menu-eyebrow">Navigation</div>
     <ul class="menu-nav">
-      <li><a href="#work">Work <span class="num">01</span></a></li>
-      <li><a href="#shop">Shop <span class="num">02</span></a></li>
-      <li><a href="#process">Process <span class="num">03</span></a></li>
-      <li><a href="#commission">Commission <span class="num">04</span></a></li>
-      <li><a href="#about">About <span class="num">05</span></a></li>
+      <li><a data-page="work">Work <span class="num">01</span></a></li>
+      <li><a data-page="shop">Shop <span class="num">02</span></a></li>
+      <li><a data-page="process">Process <span class="num">03</span></a></li>
+      <li><a data-page="commission">Commission <span class="num">04</span></a></li>
+      <li><a data-page="about">About <span class="num">05</span></a></li>
     </ul>
   </div>
   <div class="menu-footer">
@@ -416,18 +634,332 @@ body.lb-open,body.menu-open{cursor:default;}
       <a href="#">Newsletter</a>
       <a href="mailto:hello@atelierandink.com">hello@atelierandink.com</a>
     </div>
-    <p class="menu-copy">
-      © 2026 Elene Kipiani<br>
-      All work made by hand in Tbilisi, Georgia.
-    </p>
+    <p class="menu-copy">© 2026 Elene Kipiani<br>All work made by hand in Tbilisi, Georgia.</p>
   </div>
 </nav>
 
-<!-- ══════════ HERO TEXT ══════════ -->
+<!-- ══════════ HERO ══════════ -->
 <div id="hero">
-  <div class="eyebrow">Community Gallery</div>
+  <div class="eyebrow">Georgian Calligraphy</div>
   <h1>Letters made<br><em>by hand.</em></h1>
-  <div class="sub">Atelier &amp; Ink · Tbilisi · click any card</div>
+  <div class="sub">Georgian calligraphy &amp; lettering art</div>
+</div>
+
+<!-- ══════════ PAGE: WORK ══════════ -->
+<div class="page-overlay" id="page-work">
+  <div class="page-inner">
+    <div class="page-title-block">
+      <div class="page-eyebrow">Portfolio</div>
+      <h2>Selected <em>Work</em></h2>
+      <p class="page-lead">A curated collection of calligraphy, lettering, and illuminated manuscripts — each piece made entirely by hand in Tbilisi.</p>
+    </div>
+    <div class="work-grid" id="work-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE: SHOP ══════════ -->
+<div class="page-overlay" id="page-shop">
+  <div class="page-inner">
+    <div class="page-title-block">
+      <div class="page-eyebrow">Shop</div>
+      <h2>Original <em>Pieces</em></h2>
+      <p class="page-lead">A small selection of original artworks and fine art prints available for purchase. Each piece is signed and accompanied by a certificate of authenticity.</p>
+    </div>
+    <div class="shop-grid">
+      <div class="shop-item">
+        <div class="shop-item-img"><canvas width="300" height="300" data-shop="0"></canvas></div>
+        <div class="shop-item-body">
+          <div class="shop-item-name">Psalterium M — Original</div>
+          <div class="shop-item-price">₾ 2,400 · Original</div>
+          <div class="shop-item-desc">Iron gall on calfskin vellum, framed. 28 × 38 cm. One of a kind.</div>
+          <button class="btn-buy">Enquire →</button>
+        </div>
+      </div>
+      <div class="shop-item">
+        <div class="shop-item-img"><canvas width="300" height="300" data-shop="2"></canvas></div>
+        <div class="shop-item-body">
+          <div class="shop-item-name">Chanson d'Automne — Fine Print</div>
+          <div class="shop-item-price">₾ 380 · Edition of 12</div>
+          <div class="shop-item-desc">Giclée on Hahnemühle paper, signed & numbered. 30 × 40 cm.</div>
+          <button class="btn-buy">Add to cart →</button>
+        </div>
+      </div>
+      <div class="shop-item">
+        <div class="shop-item-img"><canvas width="300" height="300" data-shop="5"></canvas></div>
+        <div class="shop-item-body">
+          <div class="shop-item-name">Codex Aureus — Fine Print</div>
+          <div class="shop-item-price">₾ 450 · Edition of 8</div>
+          <div class="shop-item-desc">Giclée with real shell gold details. 24 × 34 cm, signed.</div>
+          <button class="btn-buy">Add to cart →</button>
+        </div>
+      </div>
+      <div class="shop-item">
+        <div class="shop-item-img"><canvas width="300" height="300" data-shop="6"></canvas></div>
+        <div class="shop-item-body">
+          <div class="shop-item-name">Fiat Lux — Original</div>
+          <div class="shop-item-price">₾ 1,800 · Original</div>
+          <div class="shop-item-desc">Walnut ink on Khadi paper. 32 × 46 cm, unframed.</div>
+          <button class="btn-buy">Enquire →</button>
+        </div>
+      </div>
+      <div class="shop-item">
+        <div class="shop-item-img"><canvas width="300" height="300" data-shop="7"></canvas></div>
+        <div class="shop-item-body">
+          <div class="shop-item-name">Lettering Tools Set</div>
+          <div class="shop-item-price">₾ 220 · Tools</div>
+          <div class="shop-item-desc">Curated set of broad-edge nibs, iron gall ink, and Arches paper, selected by the studio.</div>
+          <button class="btn-buy">Add to cart →</button>
+        </div>
+      </div>
+      <div class="shop-item">
+        <div class="shop-item-img"><canvas width="300" height="300" data-shop="3"></canvas></div>
+        <div class="shop-item-body">
+          <div class="shop-item-name">Workshop — Recording</div>
+          <div class="shop-item-price">₾ 95 · Digital</div>
+          <div class="shop-item-desc">Full-length recording of the Tbilisi Italic Hand workshop, with PDF reference sheets.</div>
+          <button class="btn-buy">Purchase →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE: PROCESS ══════════ -->
+<div class="page-overlay" id="page-process">
+  <div class="page-inner">
+    <div class="page-title-block">
+      <div class="page-eyebrow">Behind the Work</div>
+      <h2>The <em>Process</em></h2>
+      <p class="page-lead">Every piece begins long before ink touches paper. Georgian calligraphy is a practice of patience, rooted in centuries of manuscript tradition.</p>
+    </div>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="process-step-num">01</div>
+        <div class="process-step-content">
+          <h3>Consultation & Concept</h3>
+          <p>Each commission begins with a conversation — about the text, its meaning, and the context in which it will live. I study historical references relevant to the script style requested and sketch several layout proposals before any ink is prepared.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">02</div>
+        <div class="process-step-content">
+          <h3>Material Preparation</h3>
+          <p>The choice of support — vellum, cotton rag, or hemp paper — shapes everything that follows. Skins are stretched and prepared with pumice. Inks are ground or brewed from historical recipes: iron gall, walnut, lampblack, and natural pigments sourced from Georgian suppliers wherever possible.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">03</div>
+        <div class="process-step-content">
+          <h3>Ruling & Layout</h3>
+          <p>Lines are ruled with a bone folder or agate burnisher directly on the support — no pencil marks. The spacing of ascenders and descenders, the relationship of interlinear space to x-height: these proportions follow the same mathematical ratios found in 12th-century Georgian manuscripts.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">04</div>
+        <div class="process-step-content">
+          <h3>Writing</h3>
+          <p>The writing itself happens in sustained sessions, never rushed. A broad-edge nib held at a consistent pen angle produces the characteristic thick-thin contrast of historical scripts. Corrections are made by scraping with a knife, as medieval scribes did — no white-out, no digital fixes.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">05</div>
+        <div class="process-step-content">
+          <h3>Gilding & Illumination</h3>
+          <p>When a commission calls for gold, glair (egg white) or gum ammoniac is applied as the adhesive layer. Gold leaf — 23.5 karat — is laid and burnished to a mirror finish with an agate stone. Shell gold is mixed fresh from powder for fine detail work.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">06</div>
+        <div class="process-step-content">
+          <h3>Finishing & Delivery</h3>
+          <p>Finished works are window-matted with archival materials and wrapped in tissue. Originals are shipped in rigid mailers with tracking. Each piece is accompanied by documentation of materials used and care instructions for long-term preservation.</p>
+        </div>
+      </div>
+    </div>
+    <div class="process-tools">
+      <h3>Materials & Tools</h3>
+      <div class="tools-list">
+        <span class="tool-tag">Iron Gall Ink</span>
+        <span class="tool-tag">Walnut Ink</span>
+        <span class="tool-tag">Lampblack</span>
+        <span class="tool-tag">Shell Gold</span>
+        <span class="tool-tag">23.5k Gold Leaf</span>
+        <span class="tool-tag">Calfskin Vellum</span>
+        <span class="tool-tag">Khadi Paper</span>
+        <span class="tool-tag">Arches Cold-Press</span>
+        <span class="tool-tag">Hemp Paper</span>
+        <span class="tool-tag">Broad-Edge Nibs</span>
+        <span class="tool-tag">Bone Folder</span>
+        <span class="tool-tag">Agate Burnisher</span>
+        <span class="tool-tag">Glair</span>
+        <span class="tool-tag">Gum Ammoniac</span>
+        <span class="tool-tag">Pumice</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE: COMMISSION ══════════ -->
+<div class="page-overlay" id="page-commission">
+  <div class="page-inner">
+    <div class="page-title-block">
+      <div class="page-eyebrow">Bespoke Work</div>
+      <h2>Commission a <em>Piece</em></h2>
+      <p class="page-lead">Every commission is unique. Whether a single word or a full manuscript page, the work begins with your vision and is realised entirely by hand.</p>
+    </div>
+    <div class="commission-layout">
+      <div class="commission-info">
+        <h3>How it works</h3>
+        <p>Fill in the form and I'll respond within 2–3 working days with a quote and timeline. Commissions are accepted in order of enquiry; current lead time is approximately 6–8 weeks.</p>
+        <p>A 50% deposit is required to begin. The balance is due upon completion, before shipping. I work with clients worldwide and accept bank transfer and card payment.</p>
+        <div class="commission-details">
+          <div class="comm-detail">
+            <div class="comm-detail-icon">❧</div>
+            <div class="comm-detail-text">
+              <h4>Lead time</h4>
+              <p>6–8 weeks from deposit. Rush orders (3–4 weeks) available at a 40% surcharge.</p>
+            </div>
+          </div>
+          <div class="comm-detail">
+            <div class="comm-detail-icon">❧</div>
+            <div class="comm-detail-text">
+              <h4>Pricing</h4>
+              <p>From ₾ 600 for a small single-script piece. Illuminated works from ₾ 2,000. Quote provided before commitment.</p>
+            </div>
+          </div>
+          <div class="comm-detail">
+            <div class="comm-detail-icon">❧</div>
+            <div class="comm-detail-text">
+              <h4>Shipping</h4>
+              <p>Worldwide. Insured, tracked, rigid packaging. DHL Express available.</p>
+            </div>
+          </div>
+          <div class="comm-detail">
+            <div class="comm-detail-icon">❧</div>
+            <div class="comm-detail-text">
+              <h4>Revisions</h4>
+              <p>One round of layout revisions before writing begins. The final work is unique — no two pieces are identical.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="contact-form" id="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Your name</label>
+              <input class="form-input" type="text" placeholder="Elene Kipiani" id="f-name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-input" type="email" placeholder="hello@example.com" id="f-email"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Script style</label>
+            <select class="form-select" id="f-style">
+              <option value="">Select a style...</option>
+              <option>Georgian Mkhedruli (მხედრული)</option>
+              <option>Georgian Asomtavruli (ასომთავრული)</option>
+              <option>Gothic / Texturalis</option>
+              <option>Roman Capitals</option>
+              <option>Italic Hand</option>
+              <option>Carolingian Minuscule</option>
+              <option>Insular Half-Uncial</option>
+              <option>Not sure — advise me</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Text to be written</label>
+            <textarea class="form-input form-textarea" placeholder="Paste or type the text you'd like written. If it's a longer passage, a few lines is enough to start." id="f-text"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Support material</label>
+              <select class="form-select" id="f-support">
+                <option value="">Advise me</option>
+                <option>Calfskin Vellum</option>
+                <option>Arches Cotton Rag</option>
+                <option>Khadi Paper</option>
+                <option>Hemp Paper</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gilding</label>
+              <select class="form-select" id="f-gold">
+                <option value="none">No gilding</option>
+                <option>Shell gold accents</option>
+                <option>Gold leaf initials</option>
+                <option>Full illumination</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Additional notes</label>
+            <textarea class="form-input form-textarea" placeholder="Occasion, dimensions, framing preferences, deadline, or anything else..." id="f-notes" style="min-height:80px;"></textarea>
+          </div>
+          <button class="btn-submit" id="btn-submit">Send enquiry →</button>
+          <p class="form-note">Your details are used only to respond to this enquiry and are never shared.</p>
+        </div>
+        <div class="form-success" id="form-success">
+          <div class="form-success-icon">❧</div>
+          <h3>Enquiry received</h3>
+          <p>Thank you for reaching out. I'll review your commission details and reply within 2–3 working days.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE: ABOUT ══════════ -->
+<div class="page-overlay" id="page-about">
+  <div class="page-inner">
+    <div class="page-title-block">
+      <div class="page-eyebrow">The Artist</div>
+      <h2>Elene <em>Kipiani</em></h2>
+    </div>
+    <div class="about-layout">
+      <div>
+        <div class="about-portrait">
+          <canvas width="400" height="530" id="about-portrait-canvas"></canvas>
+          <span class="about-portrait-label">Tbilisi Studio · 2026</span>
+        </div>
+      </div>
+      <div class="about-text">
+        <h3>Rooted in Georgian tradition, reaching into the world of the manuscript.</h3>
+        <p>I am a calligrapher and lettering artist based in Tbilisi, Georgia. My practice is grounded in the study of historical scripts — particularly the ancient Georgian alphabets Asomtavruli and Nuskhuri, alongside the Western manuscript traditions of medieval and Renaissance Europe.</p>
+        <p>I trained at the Tbilisi State Academy of Arts and later undertook independent research into manuscript collections in Tbilisi, Kutaisi, and at the British Library in London. The tension between these two traditions — Georgian and European — is the creative space I inhabit.</p>
+        <p>Each piece I make is entirely handmade: the ink brewed, the vellum scraped, the gold burnished by hand. I do not use digital tools to plan or execute work — only historical instruments, historical recipes, and time.</p>
+        <p>I accept a limited number of commissions each year and teach occasional workshops in Tbilisi. If you are interested in working together, I would be glad to hear from you.</p>
+        <div class="about-facts">
+          <div class="about-fact">
+            <span class="about-fact-label">Based in</span>
+            <span class="about-fact-val">Tbilisi, Georgia</span>
+          </div>
+          <div class="about-fact">
+            <span class="about-fact-label">Training</span>
+            <span class="about-fact-val">Tbilisi State Academy of Arts</span>
+          </div>
+          <div class="about-fact">
+            <span class="about-fact-label">Practice</span>
+            <span class="about-fact-val">Since 2014</span>
+          </div>
+          <div class="about-fact">
+            <span class="about-fact-label">Scripts</span>
+            <span class="about-fact-val">Georgian, Latin, Greek</span>
+          </div>
+          <div class="about-fact">
+            <span class="about-fact-label">Commissions</span>
+            <span class="about-fact-val">Worldwide · Limited per year</span>
+          </div>
+          <div class="about-fact">
+            <span class="about-fact-label">Contact</span>
+            <span class="about-fact-val">hello@atelierandink.com</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ══════════ LIGHTBOX ══════════ -->
@@ -437,9 +969,7 @@ body.lb-open,body.menu-open{cursor:default;}
   <button id="lb-next">&#8594;</button>
   <div id="lb-modal">
     <button id="lb-close">&#10005;</button>
-    <div id="lb-img-pane">
-      <img id="lb-img" alt=""/>
-    </div>
+    <div id="lb-img-pane"><img id="lb-img" alt=""/></div>
     <div id="lb-text-pane">
       <div>
         <div class="lb-eyebrow">Selected Work</div>
@@ -449,9 +979,7 @@ body.lb-open,body.menu-open{cursor:default;}
       </div>
       <div>
         <div id="lb-actions">
-          <a href="#commission" class="btn-commission" id="lb-cta">
-            Commission similar piece <span class="arr">&#8594;</span>
-          </a>
+          <button class="btn-commission" id="lb-cta">Commission similar piece <span class="arr">→</span></button>
           <button class="btn-share" id="lb-share">Share this work</button>
         </div>
         <div id="lb-meta"></div>
@@ -470,42 +998,13 @@ body.lb-open,body.menu-open{cursor:default;}
     <a href="mailto:hello@atelierandink.com">Email</a>
   </div>
 </footer>
-
 <div id="hint">drag to explore &nbsp;·&nbsp; click any card to open</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ════════════════════════════════════════
-//  MENU TOGGLE
-// ════════════════════════════════════════
-const menuToggle   = document.getElementById('menu-toggle');
-const siteMenu     = document.getElementById('site-menu');
-const menuBackdrop = document.getElementById('menu-backdrop');
-
-function openMenu(){
-  siteMenu.classList.add('open');
-  menuBackdrop.classList.add('open');
-  menuToggle.classList.add('open');
-  menuToggle.setAttribute('aria-expanded','true');
-  document.body.classList.add('menu-open');
-}
-function closeMenu(){
-  siteMenu.classList.remove('open');
-  menuBackdrop.classList.remove('open');
-  menuToggle.classList.remove('open');
-  menuToggle.setAttribute('aria-expanded','false');
-  document.body.classList.remove('menu-open');
-}
-menuToggle.addEventListener('click',()=>siteMenu.classList.contains('open')?closeMenu():openMenu());
-menuBackdrop.addEventListener('click',closeMenu);
-document.querySelectorAll('.menu-nav a').forEach(a=>a.addEventListener('click',closeMenu));
-
-// ════════════════════════════════════════
-//  CONFIG
-// ════════════════════════════════════════
-const CARD_COUNT=26,SPHERE_R=3.0,CARD_W=0.78,CARD_H=1.04;
-const FIB_PHI=Math.PI*(3-Math.sqrt(5));
-
+/* ════════════════════════════════
+   CATALOGUE
+════════════════════════════════ */
 const CATALOGUE=[
   {title:'Psalterium M',      tags:['Iron Gall','Calfskin','Medieval'],
    desc:'A study of late-medieval psalter forms, featuring a fully illuminated initial and gothic texturalis script on prepared calfskin vellum.'},
@@ -523,27 +1022,15 @@ const CATALOGUE=[
    desc:'A gilded initial following the traditions of Carolingian manuscript production on prepared calf vellum.'},
   {title:'Ave Maria',         tags:['Gothic','Texturalis','Vellum'],
    desc:'A devotional text in precise gothic texturalis on calfskin vellum using iron gall ink and shell gold.'},
+  {title:'Mkhedruli Study',   tags:['Georgian','Mkhedruli','Traditional'],
+   desc:'A meditative exploration of the Georgian Mkhedruli script, rendered with a broad-edge quill on cotton rag paper.'},
+  {title:'Asomtavruli',       tags:['Georgian','Ancient','Gold'],
+   desc:'The ancient Georgian Asomtavruli alphabet rendered in shell gold on deep indigo-dyed vellum, following illuminated gospel traditions.'},
 ];
 
-// ════════════════════════════════════════
-//  SCENE
-// ════════════════════════════════════════
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,200);
-camera.position.z=7.5;
-
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.setSize(innerWidth,innerHeight);
-renderer.setClearColor(0x070707,1);
-document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-const sphereGroup=new THREE.Group();
-scene.add(sphereGroup);
-
-// ════════════════════════════════════════
-//  CARD TEXTURES
-// ════════════════════════════════════════
+/* ════════════════════════════════
+   CARD DESIGNS
+════════════════════════════════ */
 const DESIGNS=[
   (c,w,h)=>{
     const bg=c.createLinearGradient(0,0,0,h);bg.addColorStop(0,'#1c1c1c');bg.addColorStop(1,'#111');
@@ -595,7 +1082,7 @@ const DESIGNS=[
     c.fillStyle='#EBE2D1';c.fillRect(0,0,w,h);
     c.strokeStyle='#C9A55A';c.lineWidth=1.2;
     c.strokeRect(w*.07,h*.05,w*.86,h*.9);c.strokeRect(w*.11,h*.08,w*.78,h*.84);
-    c.fillStyle='#7A5820';c.font=`bold ${w*.62}px Fraunces,Georgia,serif`;
+    c.fillStyle='#7A5820';c.font=`bold ${w*.62}px Georgia,serif`;
     c.textAlign='center';c.textBaseline='middle';c.globalAlpha=.75;
     c.fillText('A',w*.5,h*.46);c.globalAlpha=1;
     c.strokeStyle='#B8924A';c.lineWidth=.9;
@@ -619,7 +1106,47 @@ const DESIGNS=[
     c.strokeStyle='rgba(184,146,74,.15)';c.lineWidth=.5;
     [.07,.93].forEach(x=>{c.beginPath();c.moveTo(w*x,h*.06);c.lineTo(w*x,h*.94);c.stroke();});
   },
+  (c,w,h)=>{
+    // Georgian Mkhedruli style
+    c.fillStyle='#0f0e0c';c.fillRect(0,0,w,h);
+    c.strokeStyle='rgba(184,146,74,.55)';c.lineWidth=1;
+    c.strokeRect(w*.08,h*.06,w*.84,h*.88);
+    c.fillStyle='rgba(244,237,224,.65)';c.font=`${w*.38}px Georgia,serif`;
+    c.textAlign='center';c.textBaseline='middle';c.globalAlpha=.8;
+    c.fillText('მ',w*.5,h*.42);c.globalAlpha=1;
+    c.strokeStyle='rgba(184,146,74,.3)';c.lineWidth=.7;
+    for(let i=0;i<3;i++){c.beginPath();c.moveTo(w*.12,h*(.7+i*.07));c.lineTo(w*.88,h*(.7+i*.07));c.stroke();}
+  },
+  (c,w,h)=>{
+    // Asomtavruli gold on dark
+    c.fillStyle='#0a0a12';c.fillRect(0,0,w,h);
+    const gl=c.createRadialGradient(w*.5,h*.4,0,w*.5,h*.4,w*.4);
+    gl.addColorStop(0,'rgba(212,171,92,.85)');gl.addColorStop(.6,'rgba(184,146,74,.4)');gl.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=gl;c.fillRect(0,0,w,h);
+    c.fillStyle='rgba(212,171,92,.7)';c.font=`bold ${w*.42}px Georgia,serif`;
+    c.textAlign='center';c.textBaseline='middle';c.globalAlpha=.9;
+    c.fillText('Ⴀ',w*.5,h*.4);c.globalAlpha=1;
+    c.strokeStyle='rgba(212,171,92,.25)';c.lineWidth=.8;
+    c.strokeRect(w*.1,h*.07,w*.8,h*.86);
+  },
 ];
+
+/* ════════════════════════════════
+   THREE.JS SCENE
+════════════════════════════════ */
+const CARD_COUNT=26,SPHERE_R=3.0,CARD_W=0.78,CARD_H=1.04;
+const FIB_PHI=Math.PI*(3-Math.sqrt(5));
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,200);
+camera.position.z=7.5;
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.setClearColor(0x070707,1);
+document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+const sphereGroup=new THREE.Group();
+scene.add(sphereGroup);
 
 function buildTexture(idx){
   const CW=320,CH=426;
@@ -627,28 +1154,20 @@ function buildTexture(idx){
   const ctx=cv.getContext('2d');
   DESIGNS[idx%DESIGNS.length](ctx,CW,CH);
   ctx.strokeStyle='rgba(244,237,224,.16)';ctx.lineWidth=3;ctx.strokeRect(1.5,1.5,CW-3,CH-3);
-  const tex=new THREE.CanvasTexture(cv);tex.needsUpdate=true;
-  return{tex,canvas:cv};
+  return{tex:new THREE.CanvasTexture(cv),canvas:cv};
 }
 
-// ════════════════════════════════════════
-//  BUILD CARDS
-// ════════════════════════════════════════
 const cardData=[],cardMeshes=[];
-
 for(let i=0;i<CARD_COUNT;i++){
   const yn=1-(i/(CARD_COUNT-1))*2;
   const r=Math.sqrt(Math.max(0,1-yn*yn));
   const th=FIB_PHI*i;
   const nx=Math.cos(th)*r,nz=Math.sin(th)*r,ny=yn;
-
   const{tex,canvas}=buildTexture(i);
   const baseOp=.82+Math.random()*.18;
-
   const geo=new THREE.PlaneGeometry(CARD_W,CARD_H);
   const mat=new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:baseOp,side:THREE.DoubleSide});
   const mesh=new THREE.Mesh(geo,mat);
-
   mesh.position.set(nx*SPHERE_R,ny*SPHERE_R,nz*SPHERE_R);
   const outward=new THREE.Vector3(nx,ny,nz);
   const upRef=Math.abs(ny)>.99?new THREE.Vector3(1,0,0):new THREE.Vector3(0,1,0);
@@ -656,7 +1175,6 @@ for(let i=0;i<CARD_COUNT;i++){
   const cardUp=new THREE.Vector3().crossVectors(right,outward).normalize();
   mesh.setRotationFromMatrix(new THREE.Matrix4().makeBasis(right,cardUp,outward));
   mesh.rotateZ((Math.random()-.5)*.38);
-
   sphereGroup.add(mesh);
   const cat=CATALOGUE[i%CATALOGUE.length];
   cardData.push({mesh,canvas,baseOp,imageURL:null,title:cat.title,tags:[...cat.tags],desc:cat.desc});
@@ -676,36 +1194,169 @@ const LC=new THREE.Color(0x252525);
   sphereGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:LC,transparent:true,opacity:.35})));
 });
 
-// ════════════════════════════════════════
-//  DOM
-// ════════════════════════════════════════
-const lightbox =document.getElementById('lightbox');
-const lbImg    =document.getElementById('lb-img');
-const lbTitle  =document.getElementById('lb-title');
-const lbTags   =document.getElementById('lb-tags');
-const lbDesc   =document.getElementById('lb-desc');
-const lbMeta   =document.getElementById('lb-meta');
-const hero     =document.getElementById('hero');
+/* ════════════════════════════════
+   ROUTER — SPA page navigation
+════════════════════════════════ */
+let currentPage=null;
 
+function navigateTo(page){
+  // close lightbox if open
+  if(lbOpen)closeLb();
+  closeMenu();
+
+  // deactivate all nav links
+  document.querySelectorAll('[data-page]').forEach(el=>{
+    el.classList.remove('active');
+  });
+
+  if(page==='home'||page===null){
+    // close any open page
+    if(currentPage){
+      document.getElementById('page-'+currentPage).classList.remove('open');
+    }
+    currentPage=null;
+    hero.classList.remove('fade');
+    document.body.classList.remove('page-open');
+    renderer.domElement.style.cursor='grab';
+    return;
+  }
+
+  // open new page
+  if(currentPage&&currentPage!==page){
+    document.getElementById('page-'+currentPage).classList.remove('open');
+  }
+  currentPage=page;
+  document.getElementById('page-'+page).classList.add('open');
+  hero.classList.add('fade');
+  document.body.classList.add('page-open');
+
+  // mark active nav
+  document.querySelectorAll(`[data-page="${page}"]`).forEach(el=>{
+    el.classList.add('active');
+  });
+
+  // scroll page to top
+  const overlay=document.getElementById('page-'+page);
+  overlay.scrollTop=0;
+
+  renderer.domElement.style.cursor='default';
+}
+
+// Wire up all data-page links/buttons
+document.querySelectorAll('[data-page]').forEach(el=>{
+  el.addEventListener('click',e=>{
+    e.preventDefault();
+    const page=el.getAttribute('data-page');
+    if(page===currentPage){
+      navigateTo('home');
+    } else {
+      navigateTo(page);
+    }
+  });
+});
+
+/* ════════════════════════════════
+   WORK GRID — populate with canvases
+════════════════════════════════ */
+(function buildWorkGrid(){
+  const grid=document.getElementById('work-grid');
+  CATALOGUE.forEach((cat,i)=>{
+    const card=document.createElement('div');
+    card.className='work-card';
+    card.innerHTML=`
+      <div class="work-card-img"></div>
+      <div class="work-card-body">
+        <div class="work-card-title">${cat.title}</div>
+        <div class="work-card-tags">${cat.tags.map(t=>`<span class="work-card-tag">${t}</span>`).join('')}</div>
+      </div>`;
+    // clone canvas from card data
+    const srcCanvas=cardData[i%cardData.length].canvas;
+    const cloneCanvas=document.createElement('canvas');
+    cloneCanvas.width=srcCanvas.width;cloneCanvas.height=srcCanvas.height;
+    cloneCanvas.style.cssText='width:100%;height:100%;object-fit:cover;';
+    cloneCanvas.getContext('2d').drawImage(srcCanvas,0,0);
+    card.querySelector('.work-card-img').appendChild(cloneCanvas);
+    card.addEventListener('click',()=>openLb(i%cardData.length));
+    grid.appendChild(card);
+  });
+})();
+
+/* ════════════════════════════════
+   SHOP canvases
+════════════════════════════════ */
+document.querySelectorAll('[data-shop]').forEach(cv=>{
+  const idx=parseInt(cv.getAttribute('data-shop'));
+  const src=cardData[idx%cardData.length].canvas;
+  cv.width=src.width;cv.height=src.height;
+  cv.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
+  cv.getContext('2d').drawImage(src,0,0);
+});
+
+/* ════════════════════════════════
+   ABOUT portrait canvas
+════════════════════════════════ */
+(function buildPortrait(){
+  const cv=document.getElementById('about-portrait-canvas');
+  cv.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0;';
+  const ctx=cv.getContext('2d');
+  const w=cv.width,h=cv.height;
+  ctx.fillStyle='#111';ctx.fillRect(0,0,w,h);
+  // abstract figure
+  const g=ctx.createLinearGradient(w*.3,h*.05,w*.7,h*.95);
+  g.addColorStop(0,'rgba(220,215,205,.55)');g.addColorStop(.5,'rgba(180,170,155,.35)');g.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g;
+  ctx.beginPath();ctx.ellipse(w*.5,h*.28,w*.18,h*.17,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.moveTo(w*.3,h*.44);ctx.bezierCurveTo(w*.28,h*.65,w*.3,h*.9,w*.32,h);ctx.lineTo(w*.68,h);ctx.bezierCurveTo(w*.72,h*.9,w*.74,h*.65,w*.72,h*.44);ctx.closePath();ctx.fill();
+  // gold rule
+  ctx.strokeStyle='rgba(184,146,74,.25)';ctx.lineWidth=1;
+  ctx.strokeRect(w*.08,h*.06,w*.84,h*.88);
+})();
+
+/* ════════════════════════════════
+   MENU TOGGLE
+════════════════════════════════ */
+const menuToggle=document.getElementById('menu-toggle');
+const siteMenu=document.getElementById('site-menu');
+const menuBackdrop=document.getElementById('menu-backdrop');
+
+function openMenu(){
+  siteMenu.classList.add('open');menuBackdrop.classList.add('open');
+  menuToggle.classList.add('open');menuToggle.setAttribute('aria-expanded','true');
+  document.body.classList.add('menu-open');
+}
+function closeMenu(){
+  siteMenu.classList.remove('open');menuBackdrop.classList.remove('open');
+  menuToggle.classList.remove('open');menuToggle.setAttribute('aria-expanded','false');
+  document.body.classList.remove('menu-open');
+}
+menuToggle.addEventListener('click',()=>siteMenu.classList.contains('open')?closeMenu():openMenu());
+menuBackdrop.addEventListener('click',closeMenu);
+
+/* ════════════════════════════════
+   LIGHTBOX
+════════════════════════════════ */
+const lightbox=document.getElementById('lightbox');
+const lbImg=document.getElementById('lb-img');
+const lbTitle=document.getElementById('lb-title');
+const lbTags=document.getElementById('lb-tags');
+const lbDesc=document.getElementById('lb-desc');
+const lbMeta=document.getElementById('lb-meta');
+const hero=document.getElementById('hero');
 let lbOpen=false,lbIdx=-1;
 
-// ════════════════════════════════════════
-//  LIGHTBOX
-// ════════════════════════════════════════
 function openLb(idx){
   lbIdx=idx;lbOpen=true;fillLb(idx);
   lightbox.classList.add('open');
   document.body.classList.add('lb-open');
-  hero.classList.add('fade');
+  if(!currentPage)hero.classList.add('fade');
 }
 function closeLb(){
   lbOpen=false;lbIdx=-1;
   lightbox.classList.remove('open');
   document.body.classList.remove('lb-open');
-  hero.classList.remove('fade');
+  if(!currentPage)hero.classList.remove('fade');
 }
 function navLb(dir){lbIdx=(lbIdx+dir+CARD_COUNT)%CARD_COUNT;fillLb(lbIdx);}
-
 function fillLb(idx){
   const c=cardData[idx];
   lbTitle.textContent=c.title;
@@ -719,15 +1370,30 @@ document.getElementById('lb-close').addEventListener('click',closeLb);
 document.getElementById('lb-backdrop').addEventListener('click',closeLb);
 document.getElementById('lb-prev').addEventListener('click',()=>navLb(-1));
 document.getElementById('lb-next').addEventListener('click',()=>navLb(1));
-document.getElementById('lb-cta').addEventListener('click',()=>{closeLb();});
+document.getElementById('lb-cta').addEventListener('click',()=>{closeLb();navigateTo('commission');});
 document.getElementById('lb-share').addEventListener('click',()=>{
   if(navigator.share)navigator.share({title:cardData[lbIdx]?.title||'Atelier & Ink',url:location.href});
   else{navigator.clipboard?.writeText(location.href);alert('Link copied!');}
 });
 
-// ════════════════════════════════════════
-//  INTERACTION
-// ════════════════════════════════════════
+/* ════════════════════════════════
+   CONTACT FORM
+════════════════════════════════ */
+document.getElementById('btn-submit').addEventListener('click',()=>{
+  const name=document.getElementById('f-name').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  if(!name||!email){
+    document.getElementById('f-name').style.borderColor=name?'':'rgba(184,146,74,.6)';
+    document.getElementById('f-email').style.borderColor=email?'':'rgba(184,146,74,.6)';
+    return;
+  }
+  document.getElementById('contact-form').style.display='none';
+  document.getElementById('form-success').classList.add('show');
+});
+
+/* ════════════════════════════════
+   3D INTERACTION
+════════════════════════════════ */
 const raycaster=new THREE.Raycaster();
 const mNDC=new THREE.Vector2();
 let isDrag=false,prevM={x:0,y:0},downM={x:0,y:0};
@@ -735,18 +1401,19 @@ let velX=0,velY=.004,hovIdx=-1;
 const SN=new THREE.Vector3(1,1,1),SH=new THREE.Vector3(1.1,1.1,1.1);
 
 function isInteractable(e){
-  // Don't interact with sphere if clicking on UI elements
   const el=e.target;
-  return !el.closest('#site-header')&&!el.closest('#site-menu')&&!el.closest('#lightbox')&&!el.closest('#site-footer');
+  return !el.closest('#site-header')&&!el.closest('#site-menu')&&
+         !el.closest('#lightbox')&&!el.closest('#site-footer')&&
+         !el.closest('.page-overlay');
 }
 
 window.addEventListener('mousedown',e=>{
-  if(!isInteractable(e)||lbOpen||siteMenu.classList.contains('open'))return;
+  if(!isInteractable(e)||lbOpen||siteMenu.classList.contains('open')||currentPage)return;
   downM={x:e.clientX,y:e.clientY};isDrag=true;prevM={x:e.clientX,y:e.clientY};
   document.body.classList.add('dragging');
 });
 window.addEventListener('mousemove',e=>{
-  if(lbOpen||siteMenu.classList.contains('open'))return;
+  if(lbOpen||siteMenu.classList.contains('open')||currentPage)return;
   if(!isDrag){
     mNDC.x=(e.clientX/innerWidth)*2-1;mNDC.y=-(e.clientY/innerHeight)*2+1;
     raycaster.setFromCamera(mNDC,camera);
@@ -761,7 +1428,7 @@ window.addEventListener('mousemove',e=>{
 });
 window.addEventListener('mouseup',e=>{
   isDrag=false;document.body.classList.remove('dragging');
-  if(lbOpen||siteMenu.classList.contains('open')||!isInteractable(e))return;
+  if(lbOpen||siteMenu.classList.contains('open')||currentPage||!isInteractable(e))return;
   const dx=e.clientX-downM.x,dy=e.clientY-downM.y;
   if(Math.sqrt(dx*dx+dy*dy)<8){
     mNDC.x=(e.clientX/innerWidth)*2-1;mNDC.y=-(e.clientY/innerHeight)*2+1;
@@ -770,18 +1437,17 @@ window.addEventListener('mouseup',e=>{
     if(hits.length>0)openLb(cardMeshes.indexOf(hits[0].object));
   }
 });
-
 window.addEventListener('touchstart',e=>{
-  if(lbOpen||siteMenu.classList.contains('open'))return;
+  if(lbOpen||siteMenu.classList.contains('open')||currentPage)return;
   const t=e.touches[0];downM={x:t.clientX,y:t.clientY};isDrag=true;prevM={x:t.clientX,y:t.clientY};
 },{passive:true});
 window.addEventListener('touchmove',e=>{
-  if(lbOpen||siteMenu.classList.contains('open'))return;
+  if(lbOpen||siteMenu.classList.contains('open')||currentPage)return;
   const t=e.touches[0];
   if(isDrag){velY=(t.clientX-prevM.x)*.006;velX=(t.clientY-prevM.y)*.006;prevM={x:t.clientX,y:t.clientY};}
 },{passive:true});
 window.addEventListener('touchend',e=>{
-  isDrag=false;if(lbOpen||siteMenu.classList.contains('open'))return;
+  isDrag=false;if(lbOpen||siteMenu.classList.contains('open')||currentPage)return;
   const t=e.changedTouches[0];
   const dx=t.clientX-downM.x,dy=t.clientY-downM.y;
   if(Math.sqrt(dx*dx+dy*dy)<12){
@@ -793,7 +1459,11 @@ window.addEventListener('touchend',e=>{
 });
 
 window.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeLb();closeMenu();}
+  if(e.key==='Escape'){
+    if(lbOpen){closeLb();return;}
+    if(siteMenu.classList.contains('open')){closeMenu();return;}
+    if(currentPage){navigateTo('home');return;}
+  }
   if(lbOpen&&e.key==='ArrowLeft')navLb(-1);
   if(lbOpen&&e.key==='ArrowRight')navLb(1);
 });
@@ -802,17 +1472,18 @@ window.addEventListener('resize',()=>{
   renderer.setSize(innerWidth,innerHeight);
 });
 
-// ════════════════════════════════════════
-//  ANIMATE
-// ════════════════════════════════════════
+/* ════════════════════════════════
+   ANIMATE
+════════════════════════════════ */
 function animate(){
   requestAnimationFrame(animate);
-  const autoV=(lbOpen||siteMenu.classList.contains('open'))?.0008:.003;
+  const pageOpen=!!currentPage;
+  const autoV=(lbOpen||siteMenu.classList.contains('open')||pageOpen)?.0008:.003;
   if(!isDrag){velY+=(autoV-velY)*.025;velX*=.92;}
   sphereGroup.rotation.y+=velY;
   sphereGroup.rotation.x+=velX;
   sphereGroup.rotation.x=Math.max(-.82,Math.min(.82,sphereGroup.rotation.x));
-  cardData.forEach((c,i)=>c.mesh.scale.lerp(i===hovIdx&&!lbOpen?SH:SN,.1));
+  cardData.forEach((c,i)=>c.mesh.scale.lerp(i===hovIdx&&!lbOpen&&!pageOpen?SH:SN,.1));
   renderer.render(scene,camera);
 }
 animate();
